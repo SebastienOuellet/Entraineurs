@@ -1,0 +1,76 @@
+<div class="shell" [class.shell--menu-open]="menuOpen()" [class.shell--collapsed]="collapsed()">
+  <!-- Barre du haut : visible seulement sur mobile/tablette (menu repliable) -->
+  <header class="topbar">
+    <button
+      type="button"
+      class="topbar__menu"
+      (click)="toggleMenu()"
+      [attr.aria-expanded]="menuOpen()"
+      aria-controls="admin-sidebar"
+      aria-label="Ouvrir le menu"
+    >
+      <span></span><span></span><span></span>
+    </button>
+    <app-brand class="topbar__brand brand--inline" onDark showName />
+  </header>
+
+  <div class="backdrop" (click)="closeMenu()" aria-hidden="true"></div>
+
+  <aside id="admin-sidebar" class="sidebar">
+    <app-brand class="sidebar__brand" onDark showName />
+
+    <nav class="sidebar__nav">
+      @for (item of navItems(); track item.path) {
+        <a
+          [routerLink]="item.path"
+          routerLinkActive="active"
+          [attr.title]="collapsed() ? item.label : null"
+          [attr.aria-label]="item.label"
+        >
+          @switch (item.icon) {
+            @case ("home") {
+              <svg class="sidebar__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5" /><path d="M5 9.5V21h14V9.5" /><path d="M9.5 21v-6h5v6" /></svg>
+            }
+            @case ("settings") {
+              <svg class="sidebar__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3" /><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" /></svg>
+            }
+          }
+          <span class="sidebar__label">{{ item.label }}</span>
+        </a>
+      }
+    </nav>
+
+    <div class="sidebar__footer">
+      <!-- Réduire/agrandir : grand écran seulement (sur mobile, c'est un tiroir) -->
+      <button
+        type="button"
+        class="sidebar__collapse"
+        (click)="toggleCollapsed()"
+        [attr.aria-expanded]="!collapsed()"
+        [attr.title]="collapsed() ? 'Agrandir le menu' : 'Réduire le menu'"
+        [attr.aria-label]="collapsed() ? 'Agrandir le menu' : 'Réduire le menu'"
+      >
+        <svg class="sidebar__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 17l-5-5 5-5" /><path d="M18 17l-5-5 5-5" /></svg>
+        <span class="sidebar__label">Réduire</span>
+      </button>
+
+      @if (dbUser(); as user) {
+        <span class="sidebar__user">{{ user.Name || user.Email }}</span>
+      }
+      <button
+        type="button"
+        class="btn-secondary sidebar__logout"
+        (click)="logout()"
+        [attr.title]="collapsed() ? 'Déconnexion' : null"
+        aria-label="Déconnexion"
+      >
+        <svg class="sidebar__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><path d="M16 17l5-5-5-5" /><path d="M21 12H9" /></svg>
+        <span class="sidebar__label">Déconnexion</span>
+      </button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <router-outlet />
+  </main>
+</div>

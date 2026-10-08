@@ -1,0 +1,74 @@
+<app-settings-tabs />
+
+<div class="page-header">
+  <div class="page-header__title">
+    <h1>Courriel</h1>
+    <p class="page-subtitle">Configuration SMTP du serveur, lue dans <code>backend/.env</code>.</p>
+  </div>
+</div>
+
+@if (error()) {
+  <div class="error-banner">{{ error() }}</div>
+}
+
+<div class="card">
+  <h2>État</h2>
+  @if (loading()) {
+    <p class="empty-state">Chargement...</p>
+  } @else if (status(); as s) {
+    @if (!s.configured) {
+      <div class="warning-banner">
+        SMTP non configuré : aucun courriel ne part, ils sont seulement journalisés sur le serveur. Renseignez
+        <code>SMTP_HOST</code> et les autres valeurs <code>SMTP_*</code>, puis redémarrez le backend.
+      </div>
+    } @else if (s.dryRun) {
+      <div class="warning-banner">
+        Mode essai activé (<code>EMAIL_DRY_RUN=true</code>) : aucun courriel ne part, ils sont seulement journalisés sur le serveur.
+      </div>
+    }
+    <table class="data-table data-table--kv">
+      <tbody>
+        <tr>
+          <th>Envoi</th>
+          <td>
+            <span class="badge" [class.badge--success]="s.live" [class.badge--neutral]="!s.live">
+              {{ s.live ? "Actif" : "Journalisation seulement" }}
+            </span>
+          </td>
+        </tr>
+        <tr><th>Serveur</th><td>{{ s.host ? s.host + " : " + s.port : "—" }}</td></tr>
+        <tr><th>Chiffrement</th><td>{{ s.secure ? "TLS implicite" : "STARTTLS" }}</td></tr>
+        <tr><th>Expéditeur</th><td>{{ s.from || "—" }}</td></tr>
+      </tbody>
+    </table>
+  }
+</div>
+
+<div class="card">
+  <h2>Courriel de test</h2>
+  <form (ngSubmit)="sendTest()">
+    <div class="form-grid">
+      <label class="form-field">
+        <span>Destinataire</span>
+        <input type="email" name="recipient" [(ngModel)]="recipient" required autocomplete="email" />
+      </label>
+    </div>
+
+    @if (sendError()) {
+      <div class="error-banner">{{ sendError() }}</div>
+    }
+    @if (result(); as r) {
+      @if (r.live) {
+        <div class="info-banner">Courriel envoyé à {{ r.to }}. Vérifiez la boîte de réception, puis les courriels indésirables.</div>
+      } @else {
+        <div class="warning-banner">Courriel NON envoyé : il a seulement été journalisé sur le serveur (destinataire {{ r.to }}).</div>
+      }
+    }
+
+    <div class="form-actions">
+      <button type="submit" class="btn-primary" [disabled]="sending() || !recipient.trim()">
+        {{ sending() ? "Envoi..." : "Envoyer un courriel de test" }}
+      </button>
+    </div>
+  </form>
+</div>

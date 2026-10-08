@@ -1,0 +1,18 @@
+node_modules/
+.idea/
+.claude/
+.DS_Store
+*.log
+logs/
+
+# Backend
+backend/.env
+backend/.env.*
+!backend/.env.example
+# Service account Firebase : une clé privée, jamais dans git.
+backend/firebaseConfig/*
+!backend/firebaseConfig/README.md
+
+# Frontend
+frontend/.angular/
+frontend/dist/

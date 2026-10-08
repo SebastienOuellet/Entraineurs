@@ -1,0 +1,49 @@
+{
+  "name": "entraineurs-backend",
+  "version": "0.1.0",
+  "description": "API de la plateforme Entraîneurs",
+  "main": "src/app.js",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js",
+    "test": "vitest run",
+    "lint": "eslint src scripts test",
+    "lint:fix": "eslint src scripts test --fix",
+    "migrate": "npx sequelize-cli db:migrate --config ./migrations-config.js --env entraineurs",
+    "migrate:undo": "npx sequelize-cli db:migrate:undo --config ./migrations-config.js --env entraineurs",
+    "migration:create": "npx sequelize-cli migration:generate --config ./migrations-config.js --name",
+    "set-admin": "node scripts/set-admin.js"
+  },
+  "author": "Techqueb",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "date-fns-tz": "^3.2.0",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-rate-limit": "^8.6.2",
+    "firebase-admin": "^13.0.1",
+    "glob": "^11.0.0",
+    "helmet": "^8.0.0",
+    "nodemailer": "^7.0.3",
+    "pg": "^8.13.1",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.37.5",
+    "winston": "^3.17.0",
+    "winston-daily-rotate-file": "^5.0.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.19.0",
+    "eslint": "^9.19.0",
+    "eslint-config-prettier": "^10.0.1",
+    "globals": "^15.14.0",
+    "nodemon": "^3.1.9",
+    "prettier": "^3.4.2",
+    "sequelize-cli": "^6.6.2",
+    "vitest": "^5.0.3"
+  }
+}
